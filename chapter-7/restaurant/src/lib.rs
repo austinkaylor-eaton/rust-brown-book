@@ -3,22 +3,17 @@ Example of a restaurant module with nested modules.
 
 modules can hold definitions for other items like structs, enums, constants, traits, functions, or other modules.
  */
-mod front_of_house {
-    mod hosting {
-        fn add_to_waitlist() {}
+mod front_of_house;
+mod back_of_house;
+mod customer;
 
-        fn seat_at_table() {}
-    }
+fn deliver_order() {}
 
-    mod serving {
-        fn take_order() {}
+pub use crate::front_of_house::hosting;
 
-        fn serve_order() {}
-
-        fn take_payment() {}
-    }
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
 }
-
 /* 
 Module Tree for the restaurant module:
 crate
