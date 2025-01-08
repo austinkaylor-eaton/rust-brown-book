@@ -1,0 +1,136 @@
+﻿use std::collections::HashMap;
+
+/// Challenges offered by the book for chapter 8
+/// https://rust-book.cs.brown.edu/ch08-03-hash-maps.html#summary
+
+/// Challenge 1
+/// Given a list of integers, use a vector and return the median (when sorted, the value in the middle position) and mode (the value that occurs most often; a hash map will be helpful here) of the list.
+pub fn challenge_1(vec: Vec<i32>) -> Challenge1Result
+{
+    // Calculate the median and the mode
+    // median is 1st in tuple, mode is 2nd
+    let result = Challenge1Result {
+        median: calculate_median(vec.clone()),
+        mode: calculate_mode(vec.clone()),
+    };
+    result
+}
+
+// Enum to represent the result of Challenge 1
+pub struct Challenge1Result {
+    pub median: f32,
+    pub mode: Option<i32>,
+}
+
+/// Calculate the median of a vector of integers
+fn calculate_median(vec: Vec<i32>) -> f32
+{
+    let mut sorted_vec = vec;
+    sorted_vec.sort();
+    let middle_index = sorted_vec.len() / 2;
+    println!("The middle index is: {middle_index}");
+    let median: f32 = match sorted_vec.len() % 2 {
+        0 => {
+            (sorted_vec[middle_index] + sorted_vec[middle_index - 1]) as f32 / 2.0
+        },
+        1 => sorted_vec[middle_index] as f32,
+        _ => 0f32
+    };
+    println!("The median is: {median}");
+    median 
+}
+
+/// Calculate the mode of a vector of integers
+/// The mode is the value that occurs most often
+/// A list can have more than one mode if multiple values occur the same number of times
+/// If no value occurs more than once, the mode is 0
+/// 
+/// Steps to calculate the mode:
+///     - Create a frequency dictionary to count the occurrences of each number.
+///     - Identify the number(s) with the highest frequency.
+fn calculate_mode(vec: Vec<i32>) -> Option<i32>
+{
+    let mut frequency_dict: HashMap<i32, i32> = HashMap::new();
+    for num in vec.iter()
+    {
+        let count = frequency_dict.entry(*num).or_insert(0);
+        *count += 1;
+    }
+    
+    let mut mode = 0;
+    let mut max_frequency = 0;
+    for (num, frequency) in frequency_dict.iter()
+    {
+        if *frequency > max_frequency
+        {
+            mode = *num;
+            max_frequency = *frequency;
+        }
+    }
+    
+    // If no value occurs more than once, the mode does not exist
+    // So, we can convert this in rust to None
+    if max_frequency == 1
+    {
+        None
+    }
+    else
+    {
+        Some(mode)
+    }
+}
+
+/// Challenge 2
+/// Convert strings to pig latin. The first consonant of each word is moved to the end of the word and ay is added, so first becomes irst-fay. Words that start with a vowel have hay added to the end instead (apple becomes apple-hay). Keep in mind the details about UTF-8 encoding!
+pub fn challenge_2()
+{
+    
+}
+
+/// Challenge 3
+/// Using a hash map and vectors, create a text interface to allow a user to add employee names to a department in a company; for example, “Add Sally to Engineering” or “Add Amir to Sales.” Then let the user retrieve a list of all people in a department or all people in the company by department, sorted alphabetically.
+pub fn challenge_3()
+{
+    
+}
+
+#[cfg(test)] 
+mod tests_challenge_1 {
+    use super::*;
+    
+    #[test]
+    fn returns_correct_median_and_mode_for_odd_numbered_vector_length_with_repeating_numbers()
+    {
+        let vec: Vec<i32> = vec![1, 1, 2, 3, 4, 5, 6];
+        let result = challenge_1(vec);
+        assert_eq!(result.median, 3.0);
+        assert_eq!(result.mode, Some(1));
+    }
+    
+    #[test]
+    fn returns_correct_median_and_mode_for_odd_numbered_vector_length_with_non_repeating_numbers()
+    {
+        let vec: Vec<i32> = vec![1, 2, 3, 4, 5];
+        let result = challenge_1(vec);
+        assert_eq!(result.median, 3.0);
+        assert_eq!(result.mode, None);
+    }
+
+    #[test]
+    fn returns_correct_median_and_mode_for_even_numbered_vector_length_with_repeating_numbers()
+    {
+        let vec: Vec<i32> = vec![1, 1, 2, 3, 4, 5, 6, 7];
+        let result = challenge_1(vec);
+        assert_eq!(result.median, 3.5);
+        assert_eq!(result.mode, Some(1));
+    }
+
+    #[test]
+    fn returns_correct_median_and_mode_for_even_numbered_vector_length_with_non_repeating_numbers()
+    {
+        let vec: Vec<i32> = vec![1, 2, 3, 4, 5, 6];
+        let result = challenge_1(vec);
+        assert_eq!(result.median, 3.5);
+        assert_eq!(result.mode, None);
+    }
+}
