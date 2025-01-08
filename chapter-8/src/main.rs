@@ -1,5 +1,6 @@
 mod vectors;
+mod strings;
 
 fn main() {
-    vectors::use_enum_with_vector();
+    strings::indexing_into_a_string();
 }
