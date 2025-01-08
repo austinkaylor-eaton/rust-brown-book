@@ -1,6 +1,7 @@
 mod vectors;
 mod strings;
+mod hash_maps;
 
 fn main() {
-    strings::indexing_into_a_string();
+    hash_maps::overwriting_a_value_in_a_hash_map();
 }
