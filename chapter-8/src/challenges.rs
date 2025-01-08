@@ -81,10 +81,28 @@ fn calculate_mode(vec: Vec<i32>) -> Option<i32>
 }
 
 /// Challenge 2
-/// Convert strings to pig latin. The first consonant of each word is moved to the end of the word and ay is added, so first becomes irst-fay. Words that start with a vowel have hay added to the end instead (apple becomes apple-hay). Keep in mind the details about UTF-8 encoding!
-pub fn challenge_2()
+/// Convert strings to pig latin. 
+/// The first consonant of each word is moved to the end of the word and ay is added, so first becomes irst-fay. 
+/// Words that start with a vowel have hay added to the end instead (apple becomes apple-hay). 
+/// Keep in mind the details about UTF-8 encoding!
+pub fn challenge_2(words: String) -> String
 {
-    
+    let mut pig_latin_words: Vec<String> = Vec::new();
+    for word in words.split_whitespace()
+    {
+        let mut chars = word.chars();
+        let first_char = chars.next().unwrap();
+        let pig_latin_word = match first_char
+        {
+            'a' | 'e' | 'i' | 'o' | 'u' => format!("{word}-hay"),
+            _ => {
+                let rest_of_word: String = chars.collect();
+                format!("{rest_of_word}-{first_char}ay")
+            },
+        };
+        pig_latin_words.push(pig_latin_word);
+    }
+    pig_latin_words.join(" ")
 }
 
 /// Challenge 3
@@ -132,5 +150,26 @@ mod tests_challenge_1 {
         let result = challenge_1(vec);
         assert_eq!(result.median, 3.5);
         assert_eq!(result.mode, None);
+    }
+}
+
+#[cfg(test)]
+mod tests_challenge_2 {
+    use super::*;
+
+    #[test]
+    fn returns_correct_pig_latin_for_words_starting_with_vowels()
+    {
+        let words = String::from("apple orange elephant");
+        let result = challenge_2(words);
+        assert_eq!(result, "apple-hay orange-hay elephant-hay");
+    }
+
+    #[test]
+    fn returns_correct_pig_latin_for_words_starting_with_consonants()
+    {
+        let words = String::from("first second third");
+        let result = challenge_2(words);
+        assert_eq!(result, "irst-fay econd-say hird-tay");
     }
 }
