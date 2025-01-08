@@ -1,5 +1,5 @@
 mod vectors;
 
 fn main() {
-    vectors::immutable_borrow();
+    vectors::use_enum_with_vector();
 }
