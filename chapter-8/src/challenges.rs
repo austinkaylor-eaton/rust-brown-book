@@ -106,10 +106,99 @@ pub fn challenge_2(words: String) -> String
 }
 
 /// Challenge 3
-/// Using a hash map and vectors, create a text interface to allow a user to add employee names to a department in a company; for example, “Add Sally to Engineering” or “Add Amir to Sales.” Then let the user retrieve a list of all people in a department or all people in the company by department, sorted alphabetically.
-pub fn challenge_3()
+/// Using a hash map and vectors, create a text interface to allow a user to add employee names to a department in a company; 
+/// for example, “Add Sally to Engineering” or “Add Amir to Sales.” 
+/// Then let the user retrieve a list of all people in a department or all people in the company by department, sorted alphabetically.
+mod challenge_3
 {
+    use std::collections::HashMap;
+
+    enum Command
+    {
+        Add(String, String),
+        Retrieve(String),
+    }
     
+    #[derive(PartialEq, Eq, Hash)]
+    enum Department
+    {
+        Engineering,
+        Sales,
+        Marketing,
+        HumanResources,
+    }
+    
+    struct Company
+    {
+        departments: HashMap<Department, Vec<String>>,
+    }
+
+    impl Company {
+        pub fn new() -> Company
+        {
+            Company {
+                departments: HashMap::new(),
+            }
+        }
+        
+        /// Executes either the Add or Retrieve command
+        pub fn execute_command(&mut self, command: Command)
+        {
+            match command
+            {
+                Command::Add(employee, department) => self.add_employee(employee, department),
+                Command::Retrieve(department) => {
+                    let employees_in_department = self.retrieve_employees(department);
+                    
+                }
+            }
+        }
+        
+        /// Adds an employee to a department
+        pub fn add_employee(&mut self, employee: String, department: String)
+        {
+            let department = match department.as_str()
+            {
+                "Engineering" => Department::Engineering,
+                "Sales" => Department::Sales,
+                "Marketing" => Department::Marketing,
+                "HumanResources" => Department::HumanResources,
+                _ => panic!("Invalid department"),
+            };
+            let employees = self.departments.entry(department).or_insert(Vec::new());
+            employees.push(employee);
+        }
+        
+        /// Retrieves a list of all people in a department or all people in the company by department, sorted alphabetically
+        pub fn retrieve_employees(&self, department: String) -> Vec<String>
+        {
+            let department = match department.as_str()
+            {
+                "Engineering" => Department::Engineering,
+                "Sales" => Department::Sales,
+                "Marketing" => Department::Marketing,
+                "HumanResources" => Department::HumanResources,
+                _ => panic!("Invalid department"),
+            };
+            let employees = self.departments.get(&department).unwrap();
+            let mut sorted_employees = employees.clone();
+            sorted_employees.sort().into()
+        }
+    }
+    
+    #[cfg(test)]
+    #[test]
+    fn test_challenge_3()
+    {
+        let mut company = Company::new();
+        company.execute_command(Command::Add(String::from("Sally"), String::from("Engineering")));
+        company.execute_command(Command::Add(String::from("Amir"), String::from("Sales")));
+        company.execute_command(Command::Add(String::from("John"), String::from("Engineering")));
+        
+        // Expected output:
+        assert_eq!(company.retrieve_employees(String::from("Engineering")), vec!["John", "Sally"]);
+        assert_eq!(company.retrieve_employees(String::from("Sales")), vec!["Amir"]);
+    }
 }
 
 #[cfg(test)] 
