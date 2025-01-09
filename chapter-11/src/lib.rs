@@ -71,6 +71,30 @@ impl Guess {
     }
 }
 
+/// Private method that adds two numbers together and returns the sum
+/// # Arguments
+/// - `left`: A [usize] number
+/// - `right`: A [usize] number
+/// # Returns
+/// - A [usize] number that is the sum of `left` and `right`
+fn internal_adder(left: usize, right: usize) -> usize {
+    left + right
+}
+/*
+    cfg = configuration
+
+    The #[cfg(test)] annotation specifies that the module tests should only be included with cargo test, not with cargo build
+    This saves compile time by not compiling the test code with the rest of the library code
+    This also prevents the test code from being included in the library’s artifact that Rust generates
+ 
+    Rust allows you to test private methods!!! :) 
+    see [internal_adder] method, and it's test function [tests::internal]
+    This is because items in child modules can use the items in their ancestor modules
+    In this test, we bring all the tests module’s parent’s items into scope with use super::*, and then the test can call internal_adder. 
+    If you don’t think private functions should be tested, there’s nothing in Rust that will compel you to do so
+    
+    
+ */
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -247,4 +271,13 @@ mod tests {
         Running all tests, including ignored tests
         - cargo test -- --include-ignored
      */
+
+    /// Test the [internal_adder] function
+    /// # Expected Result
+    /// - `4` because 2 + 2 = 4
+    #[test]
+    fn internal() {
+        let result = internal_adder(2, 2);
+        assert_eq!(result, 4);
+    }
 }
