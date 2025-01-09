@@ -1,3 +1,5 @@
+mod traits;
+
 fn main() {
     let number_list = vec![34, 50, 25, 100, 65];
     find_largest_number_in_list(&number_list);
