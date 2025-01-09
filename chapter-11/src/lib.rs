@@ -201,9 +201,50 @@ mod tests {
         let result = add(2, 2);
 
         if result == 4 {
+            // If this test is passing and I want to see the println! output, 
+            // I need to run `cargo test -- --show-output`
+            println!("The result is for test it_works_with_result is {}", result);
             Ok(())
         } else {
             Err(String::from("two plus two does not equal four"))
         }
     }
+
+    /// Test the [add_two] function with `2` as an argument
+    /// # Expected Result
+    /// - `4` because 2 + 2 = 4
+    #[test]
+    fn add_two_and_two() {
+        let result = add_two(2);
+        assert_eq!(result, 4);
+    }
+
+    /// Test the [add_two] function with `3` as an argument
+    /// # Expected Result
+    /// - `5` because 3 + 2 = 5
+    #[test]
+    fn add_three_and_two() {
+        let result = add_two(3);
+        assert_eq!(result, 5);
+    }
+
+    /// Test the [add_two] function with `100` as an argument
+    /// # Expected Result
+    /// - `102` because 100 + 2 = 102
+    /// # Remarks
+    /// - If you want to run only this test, you can run `cargo test one_hundred`
+    /// - if you want to run all tests that contain the word `add_two`, you can run `cargo test add_two`
+    #[test]
+    fn one_hundred() {
+        let result = add_two(100);
+        assert_eq!(result, 102);
+    }
+    
+    /*
+        Running ignored tests only
+        - cargo test -- --ignored
+        
+        Running all tests, including ignored tests
+        - cargo test -- --include-ignored
+     */
 }
