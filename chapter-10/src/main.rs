@@ -1,4 +1,5 @@
 mod traits;
+mod lifetimes;
 
 fn main() {
     let number_list = vec![34, 50, 25, 100, 65];

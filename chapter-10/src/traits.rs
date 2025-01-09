@@ -146,7 +146,7 @@ mod clearer_trait_bounds_with_where_clauses
     use std::fmt::{Debug, Display};
 
     /// Shows how `trait bounds` would look without the `where` clause
-    fn without_where<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32;
+    fn without_where<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {0}
     
     /// Shows how `trait bounds` would look with the `where` clause
     fn with_where<T, U>(t: &T, u: &U) -> i32
