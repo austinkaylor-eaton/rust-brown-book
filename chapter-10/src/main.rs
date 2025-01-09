@@ -1,9 +1,9 @@
 mod traits;
 mod lifetimes;
 
+use lifetimes::lifetime_annotations;
 fn main() {
-    let number_list = vec![34, 50, 25, 100, 65];
-    find_largest_number_in_list(&number_list);
+    lifetime_annotations::calling_longest_string_with_different_concrete_lifetimes();
 }
 
 /// Finds the largest number in a list of numbers.
