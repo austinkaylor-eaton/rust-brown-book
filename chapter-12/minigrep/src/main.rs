@@ -31,14 +31,16 @@ fn main() {
         - This allows us to implement custom non-panic! error handling
      */
     let config = Config::build(&args).unwrap_or_else(|err| {
-        println!("Problem parsing arguments: {err}");
+        // prints to the standard error stream
+        eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
 
     // https://rust-book.cs.brown.edu/ch12-03-improving-error-handling-and-modularity.html#handling-errors-returned-from-run-in-main
     // use if let rather than unwrap_or_else to check whether run returns an Err value and to call process::exit(1) if it does
     if let Err(e) = minigrep::run(config) {
-        println!("Application error: {e}");
+        // prints to the standard error stream
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 }
