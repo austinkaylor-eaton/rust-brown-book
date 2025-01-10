@@ -83,12 +83,18 @@ impl Config {
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let mut results = Vec::new();
 
+    // TODO: Remove these debug statements
+    dbg!(query);
+    dbg!(contents);
+    
     for line in contents.lines() {
         if line.contains(query) { 
             results.push(line);
         }
     }
     
+    // TODO: Remove this debug statement
+    dbg!(&results.len());
     results
 }
 
