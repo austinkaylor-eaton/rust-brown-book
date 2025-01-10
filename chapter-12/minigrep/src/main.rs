@@ -16,7 +16,7 @@ fn main() {
         This matches the behavior of the arguments list in C.
         This lets programs use the name by which they were invoked in their execution
      */
-    dbg!(&args);
+    //dbg!(&args);
 
     // https://rust-book.cs.brown.edu/ch12-01-accepting-command-line-arguments.html#saving-the-argument-values-in-variables
     // https://rust-book.cs.brown.edu/ch12-03-improving-error-handling-and-modularity.html#calling-configbuild-and-handling-errors
