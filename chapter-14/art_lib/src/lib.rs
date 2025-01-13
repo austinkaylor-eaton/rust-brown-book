@@ -4,7 +4,7 @@
 //! 
 //! Based on the [Rust Brown Book - Chapter 14.2: Exporting a Convenient Public API with pub use](https://rust-book.cs.brown.edu/ch14-02-publishing-to-crates-io.html#exporting-a-convenient-public-api-with-pub-use)
 
-/// The kinds of RYB colors according to the RYB color model.
+/// The kinds module provides types of RYB colors according to the RYB color model.
 pub mod kinds {
     /// The primary colors according to the RYB color model.
     pub enum PrimaryColor {
