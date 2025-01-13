@@ -259,16 +259,77 @@ mod capturing_references_or_moving_ownership {
 /// # See
 /// [Brown Rust Book - 13.1: Moving Values Out of Closures and the Fn Traits](https://rust-book.cs.brown.edu/ch13-01-closures.html#moving-captured-values-out-of-closures-and-the-fn-traits)
 mod moving_capture_values_out_of_closures_and_the_fn_traits {
+    /// Represents a rectangle with a width and height
+    /// # Remarks
+    /// - ## #[derive(Debug)]` annotation 
+    /// - Will print the struct in a readable format
+    /// - This is useful for debugging purposes
+    #[derive(Debug)]
+    struct Rectangle {
+        width: u32,
+        height: u32,
+    }
     
+    impl Rectangle {
+        /// A function that uses an `FnOnce` closure to modify the `Rectangle`
+        /// # Arguments
+        /// * `self` - The `Rectangle` struct
+        /// * `f` - A closure that takes ownership of the `Rectangle` and returns a modified `Rectangle`
+        /// # Returns
+        /// * The modified `Rectangle` struct
+        /// # Example
+        /// - In this example, the modify function is used to apply a closure that modifies the `width` and `height` of the `Rectangle`. 
+        /// - The closure takes ownership of the `Rectangle`, modifies its fields, and returns the modified `Rectangle`
+        /// ```rust
+        /// let rect = super::Rectangle { width: 30, height: 50 };
+        /// println!("Original rectangle: {:?}", rect);
+        /// 
+        /// let modified_rect = rect.modify(|mut r| {
+        ///     r.width += 10;
+        ///     r.height += 20;
+        ///     r
+        /// });
+        /// 
+        /// println!("Modified rectangle: {:?}", modified_rect);
+        fn modify<F>(self, f: F) -> Rectangle
+        where
+            F: FnOnce(Rectangle) -> Rectangle,
+        {
+            f(self)
+        }
+    }
+
+  
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+/// Demonstrates how using closures must name captured lifetimes
+/// # Notes
+/// - When using or designing functions that accept or return closures, you'll need to think about the lifetimes of the data that the closures capture
+/// # See
+/// [Brown Rust Book - 13.1: Closures Must Name Captured Lifetimes](https://rust-book.cs.brown.edu/ch13-01-closures.html#closures-must-name-captured-lifetimes)
+mod closures_must_name_captured_lifetimes {
+    /// Makes a cloner closure that captures a reference to a string slice
+    /// # Arguments
+    /// * `s_ref` - A reference to a string slice
+    /// # Returns
+    /// * A closure that clones the string slice
+    /// # Remarks
+    /// -  Example of using a closure with lifetimes to ensure the closure doesn't outlive the data it captures
+    /// - The closure captures a reference to a string slice, so it needs a lifetime annotation to specify that the returned closure can't outlive the data it captures
+    /// - The lifetime annotation in the `impl` trait definition specifies that the returned closure captures a reference to a string slice with the same lifetime as the reference passed in
+    /// - The `+ 'a` syntax is a trait bound that specifies the returned closure captures a reference with the same lifetime as the reference passed in
+    /// # Example
+    /// ```rust
+    /// // s_own gets Read and Ownership rights
+    /// let s_own = String::from("hello");
+    /// // s_own loses Ownership rights to the closure make_a_cloner
+    /// // make_a_cloner gains Read and Ownership rights to s_own
+    /// let cloner = super::make_a_cloner(&s_own);
+    /// // Rust recognizes that as long as make_a_cloner is in use and scope, s_own can't be dropped
+    /// drop(s_own);
+    /// cloner();
+    /// ```
+    fn make_a_cloner<'a>(s_ref: &'a str) -> impl Fn() -> String + 'a {
+        move || s_ref.to_string()
     }
 }
