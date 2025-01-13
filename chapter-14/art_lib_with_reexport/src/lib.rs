@@ -1,3 +1,4 @@
+#![deny(missing_docs)] // Tells Rust to treat undocumented code as an error
 //! # Art
 //!
 //! A library for modeling artistic concepts.
@@ -16,16 +17,22 @@ pub mod kinds {
     #[derive(Debug, PartialEq, Clone, Copy)]
     /// The primary colors according to the RYB color model.
     pub enum PrimaryColor {
+        /// The color red.
         Red,
+        /// The color yellow.
         Yellow,
+        /// The color blue.
         Blue,
     }
 
     #[derive(Debug, PartialEq)]
     /// Colors created by mixing two primary colors in equal amounts according to the RYB color model.
     pub enum SecondaryColor {
+        /// The color orange.
         Orange,
+        /// The color green.
         Green,
+        /// The color purple.
         Purple,
     }
 }
