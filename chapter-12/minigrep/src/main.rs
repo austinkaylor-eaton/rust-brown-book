@@ -29,8 +29,12 @@ fn main() {
         - The closure passed to unwrap_or_else in this example calls process::exit(1), which exits the program with a status code of 1.
         - The status code of 1 indicates to the operating system that the program ended with an error.
         - This allows us to implement custom non-panic! error handling
+        
+        13.3 
+        - This how now been updated to use env::args, which returns an iterator for the arguments passed to the program
+        - Rather than collecting the iterator values into a vector and then passing a slice to Config::build, we're passing ownership of the iterator returned from env::args to Config::build
      */
-    let config = Config::build(&args).unwrap_or_else(|err| {
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
         // prints to the standard error stream
         eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
