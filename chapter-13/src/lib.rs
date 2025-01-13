@@ -226,7 +226,7 @@ mod capturing_references_or_moving_ownership {
             .join()
             .unwrap();
 
-        println!("Before defining closure: {list:?}");
+        //println!("Before defining closure: {list:?}");
     }
 }
 
@@ -331,5 +331,155 @@ mod closures_must_name_captured_lifetimes {
     /// ```
     fn make_a_cloner<'a>(s_ref: &'a str) -> impl Fn() -> String + 'a {
         move || s_ref.to_string()
+    }
+}
+
+/// All about Iterators
+/// # Notes
+/// ## High Level Overview
+/// - The iterator pattern allows you to perform some task on a sequence of items in turn. 
+/// - An iterator is responsible for the logic of iterating over each item and determining when the sequence has finished. 
+/// - When you use iterators, you don’t have to reimplement that logic yourself.
+/// - Many iterator adapters take closures as arguments, and commonly the closures we’ll specify as arguments to iterator adapters will be closures that capture their environment
+/// # See
+/// [Brown Rust Book - 13.2: Iterators](https://rust-book.cs.brown.edu/ch13-02-iterators.html)
+mod iterators {
+    /// A simple example of using Rust's built-in iterator trait from the standard library
+    /// # Remarks
+    /// - In languages that don't have iterators, you would have to write a loop to iterate over the items in a collection, starting a variable at index 0, incrementing the variable on each iteration, and using the variable to index into the collection to get the value at that index
+    /// - Iterators handle all of the above logic for you, cutting down on repetive code and letting you worry about more important things
+    fn simple_example() {
+        let v1 = vec![1, 2, 3];
+
+        let v1_iter = v1.iter();
+
+        for val in v1_iter {
+            println!("Got: {val}");
+        }
+    }
+
+    /// Represents a shoe with a size and style
+    /// # See
+    /// [Brown Rust Book - 13.2: Using Closures that Capture Their Environment](https://rust-book.cs.brown.edu/ch13-02-iterators.html#using-closures-that-capture-their-environment)
+    #[derive(PartialEq, Debug)]
+    struct Shoe {
+        size: u32,
+        style: String,
+    }
+
+    /// Filters a list of shoes by size
+    /// # See
+    /// [Brown Rust Book - 13.2: Using Closures that Capture Their Environment](https://rust-book.cs.brown.edu/ch13-02-iterators.html#using-closures-that-capture-their-environment)
+    /// # Arguments
+    /// * `shoes` - A vector of `Shoe` structs
+    /// * `shoe_size` - The size of the shoes to filter by
+    /// # Returns
+    /// * A vector of `Shoe` structs that match the `shoe_size`
+    /// * It will only return `shoes` that match the `shoe_size`
+    /// # Explanation
+    /// - takes ownership of [`shoes`] and [`shoe_size`]
+    /// - call `into_iter` to create an iterator that takes ownership of the vector
+    /// - then call `filter` to adapt the iterator into a new iterator that only contains elements for which the closure returns `true`
+    /// - the `filter` method takes a closure
+    /// - the closure gets an item from the iterator and returns a `bool`
+    /// - if the closure returns `true`, the value will be included in the iterator produced by `filter`
+    /// - if the closure returns `false`, the value will be excluded from the iterator produced by `filter`
+    /// - the `collect` method consumes the iterator and collects the resulting values into a collection data type
+    fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
+        shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+    }
+    
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        /// Shows how to use iterators and directly call the `next` method on the iterator
+        /// # Remarks
+        /// - The `next` method returns an `Option` that will be `Some` if there is another value and `None` if there are no more values
+        #[test]
+        fn iterator_demonstration() {
+            let v1 = vec![1, 2, 3];
+
+            let mut v1_iter = v1.iter();
+
+            assert_eq!(v1_iter.next(), Some(&1));
+            assert_eq!(v1_iter.next(), Some(&2));
+            assert_eq!(v1_iter.next(), Some(&3));
+            assert_eq!(v1_iter.next(), None);
+        }
+
+        /// Example of using the `sum` method on an iterator
+        /// # Remarks
+        /// - The `sum` method is a `consuming adapter` (a.k.a a method that calls `next` on the iterator)
+        /// - `consuming adpaters` take ownership of the iterator and exhaust it
+        /// - The `sum` method takes ownership of the iterator and iterates through the items by repeatedly calling `next`, thus consuming the iterator
+        /// - As the `sum` method iterates through, it adds each item to the running total, which is returned when the iteration is complete
+        #[test]
+        fn iterator_sum() {
+            let v1 = vec![1, 2, 3];
+
+            let v1_iter = v1.iter();
+
+            let total: i32 = v1_iter.sum();
+
+            assert_eq!(total, 6);
+        }
+        
+        /// Shows how to use the `iterator adapter` `map` method on an iterator
+        /// # Remarks
+        /// ## Iterator Adapters
+        /// - They don't consume the iterator
+        /// - Instead, they produce different iterators by changing some aspect of the original iterator
+        /// - You can chain multiple adapters together to perform complex actions in a readable way
+        /// ## map
+        /// - This method takes a closure to call on each item as the items are iterated over
+        /// - The method then returns a new iterator that produces the modified items
+        /// - In this example, the closure creates a new iterator in which each item from the vector will be incremented by 1
+        /// ## collect
+        /// - iterators are lazy by default, meaning they have no effect until you call methods that consume the iterator to use it up
+        /// - The `collect` method consumes the iterator and collects the resulting values into a collection data type
+        /// - In this example, the `collect` method is called on the iterator returned by the `map` method
+        #[test]
+        fn iterator_adapter() {
+            let v1: Vec<i32> = vec![1, 2, 3];
+
+            let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+
+            assert_eq!(v2, vec![2, 3, 4]);
+        }
+
+        #[test]
+        fn filters_by_size() {
+            let shoes = vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("sneaker"),
+                },
+                Shoe {
+                    size: 13,
+                    style: String::from("sandal"),
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("boot"),
+                },
+            ];
+
+            let in_my_size = shoes_in_size(shoes, 10);
+
+            assert_eq!(
+                in_my_size,
+                vec![
+                    Shoe {
+                        size: 10,
+                        style: String::from("sneaker")
+                    },
+                    Shoe {
+                        size: 10,
+                        style: String::from("boot")
+                    },
+                ]
+            );
+        }
     }
 }
