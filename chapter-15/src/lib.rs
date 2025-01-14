@@ -41,6 +41,8 @@
 //! - This pattern uses smart pointers to achieve this.
 //! - An immutable type exposes an API for mutating the interior value
 
+mod tree;
+
 /// Module 15.1 - Using Box<T> to Point to Data on the Heap
 /// # See
 /// - [Box<T>](https://doc.rust-lang.org/std/boxed/struct.Box.html)
