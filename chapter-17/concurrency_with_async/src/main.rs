@@ -18,7 +18,8 @@ fn main() {
         //working_with_any_number_of_futures::four().await;
         //working_with_any_number_of_futures::five().await;
         //working_with_any_number_of_futures::six().await;
-        working_with_any_number_of_futures::seven().await;
+        //working_with_any_number_of_futures::seven().await;
+        working_with_any_number_of_futures::test_timeout().await;
     });
 }
 

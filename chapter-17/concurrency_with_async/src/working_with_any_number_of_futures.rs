@@ -4,6 +4,7 @@ use std::future::Future;
 use std::pin::Pin;
 use std::thread;
 use std::time::{Duration, Instant};
+use trpl::Either;
 
 /// This code prints out each message in 500 milliseconds intervals.
 /// # Remarks
@@ -211,4 +212,48 @@ pub async fn seven()
         "'yield' version finished after {} seconds.",
         time.as_secs_f32()
     );
+}
+
+/*
+    ASYNC TIMEOUT FUNCTION
+    - The async timeout function is a function that takes a future and a duration as arguments.
+    - It needs to be an async function itself so we can await it.
+    - Its first parameter should be a future to run. We can make it generic to allow it to work with any future.
+    - Its second parameter will be the maximum time to wait. 
+    - If we use a Duration, that will make it easy to pass along to `trpl::sleep`.
+    - It should return a Result. If the future completes successfully, the Result will be Ok with the value produced by the future. If the timeout elapses first, the Result will be Err with the duration that the timeout waited for.
+*/
+/// This function serves as a timeout for [Future]s
+async fn timeout<F: Future>(
+    future_to_try: F,
+    max_time: Duration,
+) -> Result<F::Output, Duration> {
+    // BEHAVIOR
+    // we want to race the future passed in against the duration
+    // We can use trpl::sleep to make a timer future from the duration
+    // We can use trpl::race to run that timer with the future the caller passes in
+    // We also know that race is not fair and polls against the arguments in the order they are passed
+    // So, we pass future_to_try to race first so it gets a chance to complete even if the max_time is very short
+    // If future_to_try finishes first, race will return Left with the output of Future
+    // If the timer finishes first, race will return Right with the output of ()
+    match trpl::race(future_to_try, trpl::sleep(max_time)).await {
+        Either::Left(output) => Ok(output),
+        Either::Right(_) => Err(max_time),
+    }
+}
+
+/// Test function for the [timeout] function
+pub(crate) async fn test_timeout()
+{
+    let slow = async {
+        trpl::sleep(Duration::from_secs(5)).await;
+        "Finally finished"
+    };
+
+    match timeout(slow, Duration::from_secs(2)).await {
+        Ok(message) => println!("Succeeded with '{message}'"),
+        Err(duration) => {
+            println!("Failed after {} seconds", duration.as_secs())
+        }
+    }
 }
