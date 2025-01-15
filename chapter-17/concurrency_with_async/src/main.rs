@@ -1,5 +1,7 @@
 //! [Brown Rust Book - Chapter 17.2: Concurrency with Async](https://rust-book.cs.brown.edu/ch17-02-concurrency-with-async.html)
 
+mod working_with_any_number_of_futures;
+
 use std::time::Duration;
 
 fn main() {
@@ -11,7 +13,12 @@ fn main() {
         //message_passing_2().await;
         //message_passing_3().await;
         //message_passing_4().await;
-        message_passing_5().await;
+        //message_passing_5().await;
+        //working_with_any_number_of_futures::three().await;
+        //working_with_any_number_of_futures::four().await;
+        //working_with_any_number_of_futures::five().await;
+        //working_with_any_number_of_futures::six().await;
+        working_with_any_number_of_futures::seven().await;
     });
 }
 
