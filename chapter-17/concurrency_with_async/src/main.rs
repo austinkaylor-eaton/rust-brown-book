@@ -1,6 +1,7 @@
 //! [Brown Rust Book - Chapter 17.2: Concurrency with Async](https://rust-book.cs.brown.edu/ch17-02-concurrency-with-async.html)
 
 mod working_with_any_number_of_futures;
+mod streams;
 
 use std::time::Duration;
 
@@ -19,7 +20,10 @@ fn main() {
         //working_with_any_number_of_futures::five().await;
         //working_with_any_number_of_futures::six().await;
         //working_with_any_number_of_futures::seven().await;
-        working_with_any_number_of_futures::test_timeout().await;
+        //working_with_any_number_of_futures::test_timeout().await;
+        //streams::stream().await;
+        //streams::only_threes_and_fives().await;
+        streams::message_getter().await;
     });
 }
 
